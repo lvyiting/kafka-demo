@@ -1,4 +1,4 @@
-package cn.ting.kafkauser.demo;
+package cn.ting.kafkauser.manualcommitdemo;
 
 
 import org.springframework.kafka.core.KafkaTemplate;

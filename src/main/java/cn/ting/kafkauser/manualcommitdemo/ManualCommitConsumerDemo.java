@@ -1,4 +1,4 @@
-package cn.ting.kafkauser.demo;
+package cn.ting.kafkauser.manualcommitdemo;
 
 
 import java.util.Collections;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 /**
  * 手动提交消费位移的Kafka消费者演示类
  *
- * 该类演示了如何在Spring Kafka中实现手动提交消费位移，
+ * 演示了如何在Spring Kafka中实现手动提交消费位移，
  * 并结合线程池处理消息以提高吞吐量，同时通过动态暂停和恢复分区
  * 来控制消费速率，防止消息积压或系统过载。
  *
@@ -49,7 +49,7 @@ public class ManualCommitConsumerDemo implements ConsumerSeekAware {
 	private ThreadPoolExecutor executorService;
 
 	/**
-	 * 静态内部类，用于模拟实际的消息处理逻辑
+	 * 用于模拟实际的消息处理逻辑
 	 * 每条消息会随机延迟0-1秒处理
 	 */
 	private static class MessageProcessor {

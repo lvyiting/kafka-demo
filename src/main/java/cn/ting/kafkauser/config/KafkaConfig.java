@@ -66,7 +66,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, String> consumerFactory() {
+    public ConsumerFactory<String, String> consumerFactoryNoAuto() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "manual-commit-group");
@@ -93,7 +93,7 @@ public class KafkaConfig {
 
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consumerFactoryNoAuto());
 
         // 设置手动提交模式
         factory.getContainerProperties().setAckMode(
@@ -103,6 +103,30 @@ public class KafkaConfig {
         // 设置并发消费者数量
         factory.setConcurrency(3);
 
+        return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String, String> consumerFactoryAuto() {
+        Map<String, Object> props = new HashMap<>();
+        props.put("bootstrap.servers", "localhost:9092");
+        props.put("group.id", "auto-batch-group");
+        props.put("auto.offset.reset", "earliest");
+        props.put("enable.auto.commit", true);
+        props.put("auto.commit.interval.ms", 3000);
+        props.put("max.poll.records", 100);
+        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        return new DefaultKafkaConsumerFactory<>(props);
+    }
+
+    @Bean("batchContainerFactory")
+    public ConcurrentKafkaListenerContainerFactory<String, String>
+    autoCommitBatchContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactoryAuto());
+        factory.setBatchListener(true);
         return factory;
     }
 } 
